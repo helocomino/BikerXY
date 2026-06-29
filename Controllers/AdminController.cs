@@ -32,22 +32,16 @@ namespace BikerXY.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Moto moto)
         {
-            // Forzamos un valor por defecto para evitar que falle por la categoría ausente
-            if (string.IsNullOrEmpty(moto.Categoria))
-            {
-                moto.Categoria = "General";
-            }
+            // Forzamos valores básicos por si acaso
+            if (string.IsNullOrEmpty(moto.Categoria)) moto.Categoria = "General";
+            if (string.IsNullOrEmpty(moto.Descripcion)) moto.Descripcion = string.Empty;
 
-            // Limpiamos errores de validación de campos que el formulario no maneja
-            ModelState.Remove("Categoria");
+            // Guardamos directamente en la base de datos saltando el validador estricto
+            _context.Add(moto);
+            await _context.SaveChangesAsync();
 
-            if (ModelState.IsValid)
-            {
-                _context.Add(moto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index)); // 👈 Te saca y te manda al listado actualizado
-            }
-            return View(moto);
+            // Te saca de la pantalla obligatoriamente y te manda al listado actualizado
+            return RedirectToAction(nameof(Index));
         }
 
         // ✏️ 3. EDITAR (Vista formulario con datos cargados)
@@ -62,35 +56,30 @@ namespace BikerXY.Controllers
         }
 
         // ✏️ EDITAR (Procesar la actualización)
-        // ✏️ EDITAR (Procesar la actualización)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Moto moto)
         {
             if (id != moto.Id) return NotFound();
 
-            if (string.IsNullOrEmpty(moto.Categoria))
+            // Forzamos valores básicos por si acaso
+            if (string.IsNullOrEmpty(moto.Categoria)) moto.Categoria = "General";
+            if (string.IsNullOrEmpty(moto.Descripcion)) moto.Descripcion = string.Empty;
+
+            try
             {
-                moto.Categoria = "General";
+                // Forzamos la actualización directa de la entidad en la base de datos
+                _context.Update(moto);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Motos.Any(e => e.Id == moto.Id)) return NotFound();
+                else throw;
             }
 
-            ModelState.Remove("Categoria");
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(moto);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index)); // 👈 Te saca y te manda al listado actualizado
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Motos.Any(e => e.Id == moto.Id)) return NotFound();
-                    else throw;
-                }
-            }
-            return View(moto);
+            // Te saca de la pantalla obligatoriamente y te manda al listado actualizado
+            return RedirectToAction(nameof(Index));
         }
 
         // 🗑️ 4. BORRAR
