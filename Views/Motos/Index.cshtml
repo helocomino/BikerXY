@@ -1,4 +1,6 @@
-﻿@model IEnumerable<BikerXY.Models.Moto>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<BikerXY.Models.Moto>
 
 @{
     ViewData["Title"] = "Catálogo de Motos";
@@ -20,7 +22,11 @@
                         <p class="card-text text-secondary"><strong>Categoría:</strong> @moto.Categoria</p>
                         <div class="mt-auto">
                             <h4 class="text-success font-weight-bold mb-3">$@moto.Precio.ToString("N2")</h4>
-                            <button class="btn btn-dark w-100 font-weight-bold">Agregar al Carrito</button>
+                            <button class="btn btn-dark btn-agregar-carrito"
+                                    data-id="@moto.Id"
+                                    data-logeado="@(HttpContextAccessor.HttpContext?.Session.GetString("UsuarioNombre") != null ? "true" : "false")">
+                                Agregar al carrito
+                            </button>
                         </div>
                     </div>
                 </div>
