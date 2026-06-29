@@ -1,5 +1,5 @@
-﻿# Estructura para compilar el proyecto
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+﻿# Estructura para compilar el proyecto (Actualizado a .NET 10)
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-env
 WORKDIR /app
 
 # Copiar los archivos del proyecto y restaurar las dependencias
@@ -10,8 +10,8 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-# Estructura final para correr la aplicación
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Estructura final para correr la aplicación (Actualizado a .NET 10)
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
