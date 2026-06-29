@@ -30,12 +30,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// 🔹 TRUCO DE RENDER: Esto asegura que la tabla Usuarios se cree en la nube automáticamente
+// 🔹 TRUCO DE RENDER CORREGIDO: Esto obliga a crear las tablas nuevas que falten en la nube
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<BikerXY.Data.ApplicationDbContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate(); // 👈 Cambiamos "EnsureCreated()" por "Migrate()"
 }
 
 app.Run();
