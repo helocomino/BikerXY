@@ -5,7 +5,7 @@ namespace BikerXY.Models
 {
     public class Moto
     {
-        [Key] // Esto le dice a la base de datos que es el ID único (Llave Primaria)
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -18,12 +18,20 @@ namespace BikerXY.Models
         public int Cilindrada { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")] // Formato correcto para dinero en PostgreSQL
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Precio { get; set; }
 
-        // Aquí guardaremos el link de internet de la imagen para evitar que Render la borre
         public string ImagenUrl { get; set; } = string.Empty;
 
         public string Categoria { get; set; } = string.Empty;
+
+        // 🆕 NUEVOS CAMPOS PARA STOCK Y FILTROS ADVANCED
+        [Required]
+        public int Stock { get; set; } = 0; // Control de inventario
+
+        [Required]
+        public string Ambiente { get; set; } = string.Empty; // Terreno, Pistera, Carretera
+
+        public string Descripcion { get; set; } = string.Empty; // Ficha técnica básica
     }
 }

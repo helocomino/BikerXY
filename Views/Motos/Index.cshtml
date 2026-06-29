@@ -22,11 +22,19 @@
                         <p class="card-text text-secondary"><strong>Categoría:</strong> @moto.Categoria</p>
                         <div class="mt-auto">
                             <h4 class="text-success font-weight-bold mb-3">$@moto.Precio.ToString("N2")</h4>
-                            <button class="btn btn-dark btn-agregar-carrito"
-                                    data-id="@moto.Id"
-                                    data-logeado="@(HttpContextAccessor.HttpContext?.Session.GetString("UsuarioNombre") != null ? "true" : "false")">
-                                Agregar al carrito
-                            </button>
+                            @if (moto.Stock > 0)
+                            {
+                                <button class="btn btn-dark btn-agregar-carrito"
+                                        data-id="@moto.Id"
+                                        data-stock="@moto.Stock"
+                                        data-logeado="@(HttpContextAccessor.HttpContext?.Session.GetString("UsuarioNombre") != null ? "true" : "false")">
+                                    Agregar al carrito
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-danger" disabled>❌ Agotado</button>
+                            }
                         </div>
                     </div>
                 </div>
