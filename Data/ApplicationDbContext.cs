@@ -10,6 +10,7 @@ namespace BikerXY.Data
         }
 
         public DbSet<Moto> Motos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         // Este método se ejecuta al crear la base de datos para meter datos iniciales
         protected override void OnModelCreating(ModelBuilder modelBuilder)

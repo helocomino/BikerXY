@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Configuración de la base de datos PostgreSQL en la nube (Render)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BikerXY.Data.ApplicationDbContext>(options =>
@@ -21,9 +22,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(
@@ -31,5 +30,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// 🔹 TRUCO DE RENDER: Esto asegura que la tabla Usuarios se cree en la nube automáticamente
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<BikerXY.Data.ApplicationDbContext>();
+    context.Database.EnsureCreated();
+}
 
 app.Run();
