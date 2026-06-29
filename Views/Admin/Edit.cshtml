@@ -1,0 +1,67 @@
+﻿@model BikerXY.Models.Moto
+
+@{
+    ViewData["Title"] = "Editar Moto";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h3 class="mb-4">✏️ Editar Propiedades de la Moto</h3>
+        <hr />
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Marca" class="form-label fw-bold">Marca</label>
+                    <input asp-for="Marca" class="form-value form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Modelo" class="form-label fw-bold">Modelo</label>
+                    <input asp-for="Modelo" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Cilindrada" class="form-label fw-bold">Cilindrada (cc)</label>
+                    <input asp-for="Cilindrada" type="number" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Precio" class="form-label fw-bold">Precio ($)</label>
+                    <input asp-for="Precio" type="number" step="0.01" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Stock" class="form-label fw-bold text-primary">📦 Stock Disponible</label>
+                    <input asp-for="Stock" type="number" class="form-control border-primary" required />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Ambiente" class="form-label fw-bold">⛰️ Ambiente / Tipo</label>
+                    <select asp-for="Ambiente" class="form-select" required>
+                        <option value="Pistera">Pistera</option>
+                        <option value="Terreno">Terreno</option>
+                        <option value="Carretera">Carretera</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ImagenUrl" class="form-label fw-bold">Enlace de la Imagen (URL)</label>
+                <input asp-for="ImagenUrl" class="form-control" required />
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Descripcion" class="form-label fw-bold">Ficha Técnica / Descripción</label>
+                <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100">Guardar Cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg w-100">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
