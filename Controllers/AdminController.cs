@@ -32,11 +32,20 @@ namespace BikerXY.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Moto moto)
         {
+            // Forzamos un valor por defecto para evitar que falle por la categoría ausente
+            if (string.IsNullOrEmpty(moto.Categoria))
+            {
+                moto.Categoria = "General";
+            }
+
+            // Limpiamos errores de validación de campos que el formulario no maneja
+            ModelState.Remove("Categoria");
+
             if (ModelState.IsValid)
             {
                 _context.Add(moto);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // 👈 Te saca y te manda al listado actualizado
             }
             return View(moto);
         }
@@ -53,11 +62,19 @@ namespace BikerXY.Controllers
         }
 
         // ✏️ EDITAR (Procesar la actualización)
+        // ✏️ EDITAR (Procesar la actualización)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Moto moto)
         {
             if (id != moto.Id) return NotFound();
+
+            if (string.IsNullOrEmpty(moto.Categoria))
+            {
+                moto.Categoria = "General";
+            }
+
+            ModelState.Remove("Categoria");
 
             if (ModelState.IsValid)
             {
@@ -65,13 +82,13 @@ namespace BikerXY.Controllers
                 {
                     _context.Update(moto);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)); // 👈 Te saca y te manda al listado actualizado
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_context.Motos.Any(e => e.Id == moto.Id)) return NotFound();
                     else throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(moto);
         }
