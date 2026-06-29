@@ -1,40 +1,51 @@
-﻿// Manejador del evento cuando se hace clic en "Agregar al carrito"
-document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
 
-    // Buscar todos los botones de agregar al carrito en la página
+    // Buscar todos los botones de agregar al carrito
     const botonesCarrito = document.querySelectorAll('.btn-agregar-carrito');
 
     botonesCarrito.forEach(boton => {
         boton.addEventListener('click', function (e) {
             e.preventDefault();
 
-            // 1️⃣ VALIDADOR DE CUENTA: Revisamos la etiqueta que configuramos en el HTML
+            // 1️⃣ Validar si el usuario está logeado de forma visual
             const estaLogeado = this.getAttribute('data-logeado') === 'true';
 
             if (!estaLogeado) {
-                // Si no inició sesión, soltamos la alerta y lo frenamos
                 alert("⚠️ Para agregar productos al carrito, debes iniciar sesión o crear una cuenta.");
-
-                // Lo redirigimos automáticamente a la pantalla de Login
                 window.location.href = '/Account/Login';
-                return; // Detiene la ejecución por completo
+                return;
             }
 
-            // 2️⃣ LÓGICA DEL CARRITO (Solo se ejecuta si está logeado):
-            // Obtenemos el ID de la moto desde el atributo data-id
+            // 2️⃣ Obtener los datos del botón
             const motoId = this.getAttribute('data-id');
 
-            // Buscamos el elemento de texto que dice "0" en el menú superior
-            const contadorCarrito = document.getElementById('cuenta-carrito');
+            // 3️⃣ ENVIAR EL PRODUCTO AL SERVIDOR (A la acción AddToCart del CartController)
+            // Usamos FormData para empaquetar el ID de la moto de forma limpia
+            const formData = new FormData();
+            formData.append('motoId', motoId);
 
-            if (contadorCarrito) {
-                // Sumamos 1 al número actual del carrito de forma visual
-                let cantidadActual = parseInt(contadorCarrito.innerText) || 0;
-                contadorCarrito.innerText = cantidadActual + 1;
-
-                // Alerta visual de éxito
-                alert("🏍️ ¡Excelente elección! Moto agregada al carrito.");
-            }
+            fetch('/Cart/AddToCart', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Actualizamos el contador del menú superior con el número real que devuelve el servidor
+                        const contadorCarrito = document.getElementById('cuenta-carrito');
+                        if (contadorCarrito) {
+                            contadorCarrito.innerText = data.totalItems;
+                        }
+                        alert("🏍️ ¡Excelente elección! Moto agregada al carrito.");
+                    } else {
+                        // Si el servidor detecta que se acabó el stock, te frena aquí y muestra el aviso
+                        alert("⚠️ " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al agregar al carrito:", error);
+                    alert("Hubo un error al procesar la solicitud.");
+                });
         });
     });
 });
