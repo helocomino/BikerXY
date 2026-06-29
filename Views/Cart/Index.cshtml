@@ -73,7 +73,9 @@
                         <h5>Total a Pagar:</h5>
                         <h4 class="text-success">@Model.Sum(c => c.Total).ToString("C")</h4>
                     </div>
-                    <button class="btn btn-success w-100 btn-lg shadow-sm">💳 Proceder al Pago</button>
+                    <form asp-controller="Cart" asp-action="ProcesarCompra" method="post">
+                        <button type="submit" class="btn btn-success w-100 btn-lg shadow-sm">💳 Proceder al Pago</button>
+                    </form>
                     <a asp-controller="Motos" asp-action="Index" class="btn btn-link w-100 text-center mt-2 text-decoration-none text-muted">← Seguir comprando</a>
                 </div>
             </div>

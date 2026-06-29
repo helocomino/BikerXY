@@ -87,6 +87,53 @@ namespace BikerXY.Controllers
             SaveCartToSession(cart);
             return RedirectToAction("Index");
         }
+        // 🔹 Procesar Compra: /Cart/ProcesarCompra
+        [HttpPost]
+        public async Task<IActionResult> ProcesarCompra()
+        {
+            var cart = GetCartFromSession();
+
+            if (cart == null || !cart.Any())
+            {
+                TempData["Error"] = "El carrito está vacío.";
+                return RedirectToAction("Index");
+            }
+
+            // Recorremos cada artículo del carrito para restar el stock en la Base de Datos
+            foreach (var item in cart)
+            {
+                var moto = await _context.Motos.FindAsync(item.MotoId);
+                if (moto != null)
+                {
+                    if (moto.Stock >= item.Cantidad)
+                    {
+                        moto.Stock -= item.Cantidad; // 📉 ¡Aquí se descuenta el stock real al comprar!
+                    }
+                    else
+                    {
+                        TempData["Error"] = $"Lo sentimos, ya no hay suficiente stock para la moto {moto.Marca} {moto.Modelo}.";
+                        return RedirectToAction("Index");
+                    }
+                }
+            }
+
+            // Guardamos los cambios de stock en la nube (Render)
+            await _context.SaveChangesAsync();
+
+            // Limpiamos el carrito de la sesión porque la compra fue exitosa
+            HttpContext.Session.Remove("CarritoCompra");
+
+            // Mandamos un mensaje de éxito a la siguiente pantalla
+            TempData["MensajeExito"] = "🏍️ ¡Compra realizada con éxito! El stock ha sido actualizado.";
+
+            return RedirectToAction("Confirmacion");
+        }
+
+        // Pantalla de éxito temporal
+        public IActionResult Confirmacion()
+        {
+            return View();
+        }
 
         // 🛠️ Métodos auxiliares para gestionar la Sesión de forma limpia
         private List<CartItem> GetCartFromSession()

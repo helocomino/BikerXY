@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Compra Exitosa";
+}
+
+<div class="container mt-5 text-center">
+    <div class="card shadow p-5 border-0 bg-light">
+        <h1 class="display-4 text-success">🎉 ¡Felicidades por tu Moto!</h1>
+        <p class="lead mt-3">@TempData["MensajeExito"]</p>
+        <p class="text-muted">Tu orden ha sido procesada de manera segura. En la siguiente fase generaremos tu factura en PDF aquí.</p>
+        <div class="mt-4">
+            <a asp-controller="Motos" asp-action="Index" class="btn btn-dark btn-lg shadow-sm">Volver al Catálogo</a>
+        </div>
+    </div>
+</div>

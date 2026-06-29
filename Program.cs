@@ -33,12 +33,28 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// 🔹 TRUCO DE RENDER CORREGIDO: Esto obliga a crear las tablas nuevas que falten en la nube
+// 🔹 TRUCO DE RENDER: Migración y Stock de prueba automático
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<BikerXY.Data.ApplicationDbContext>();
-    context.Database.Migrate(); // 👈 Cambiamos "EnsureCreated()" por "Migrate()"
+
+    context.Database.Migrate();
+
+    // ✨ TRUCO TEMPORAL DE STOCK: Si hay motos con stock 0, les ponemos 5 para probar
+    var motosSinStock = context.Motos.Where(m => m.Stock == 0).ToList();
+    if (motosSinStock.Any())
+    {
+        foreach (var moto in motosSinStock)
+        {
+            moto.Stock = 5; // Le asignamos 5 unidades a cada una
+            if (string.IsNullOrEmpty(moto.Ambiente))
+            {
+                moto.Ambiente = "Pistera"; // Le ponemos un ambiente por defecto para los futuros filtros
+            }
+        }
+        context.SaveChanges(); // Guardamos los cambios en la base de datos de Render
+    }
 }
 
 app.Run();
