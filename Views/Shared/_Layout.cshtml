@@ -14,45 +14,58 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BIKERXY</a>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom border-secondary shadow-lg py-3" style="background: linear-gradient(135deg, #121212 0%, #1c1c1c 100%);">
+            <div class="container">
+                <!-- Logo con estilo deportivo -->
+                <a class="navbar-brand fw-bold tracking-tight text-white" asp-area="" asp-controller="Home" asp-action="Index" style="letter-spacing: 2px; font-size: 1.5rem;">
+                    BIKER<span class="text-danger">XY</span>
+                </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <!-- Enlaces del lado izquierdo con animación CSS -->
+                    <ul class="navbar-nav flex-grow-1 header-links">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Motos" asp-action="Index">Inicio</a>
+                            <a class="nav-link text-light px-3 custom-nav-link" asp-area="" asp-controller="Motos" asp-action="Index">
+                                🏍️ Catálogo
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Carrito (<span id="cuenta-carrito">0</span>)</a>
+                            <a class="nav-link text-light px-3 custom-nav-link" asp-area="" asp-controller="Cart" asp-action="Index">
+                                🛒 Carrito (<span id="cuenta-carrito" class="text-danger fw-bold">0</span>)
+                            </a>
+                        </li>
+                        <!-- Enlace directo al panel si quieres entrar rápido -->
+                        <li class="nav-item">
+                            <a class="nav-link text-muted px-3 custom-nav-link-admin" asp-area="" asp-controller="Admin" asp-action="Index">
+                                🛠️ Panel Admin
+                            </a>
                         </li>
                     </ul>
 
-                    <ul class="navbar-nav ms-auto align-items-center">
-                        @if (HttpContextAccessor.HttpContext?.Session.GetString("UsuarioNombre") != null)
+                    <!-- Sección de Usuario (Lado derecho de image_f735db.png) -->
+                    <div class="d-flex align-items-center gap-3">
+                        @if (Context.Session.GetString("UsuarioNombre") != null)
                         {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark me-3">
-                                    👤 Hola, <strong>@HttpContextAccessor.HttpContext.Session.GetString("UsuarioNombre")</strong>
-                                </span>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-outline-danger btn-sm" asp-controller="Account" asp-action="Logout">Cerrar Sesión</a>
-                            </li>
+                            <div class="text-light me-2 d-flex align-items-center gap-2">
+                                <span class="text-muted small">👤 Piloto:</span>
+                                <strong class="text-white">@Context.Session.GetString("UsuarioNombre")</strong>
+                            </div>
+                            <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-danger px-3 rounded-pill fw-bold btn-logout-custom">
+                                Cerrar Sesión
+                            </a>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Iniciar Sesión</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Registrarse</a>
-                            </li>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-light px-3 rounded-pill">
+                                Ingresar
+                            </a>
                         }
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>
