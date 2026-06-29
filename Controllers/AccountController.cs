@@ -66,14 +66,16 @@ namespace BikerXY.Controllers
                 return View();
             }
 
-            // Buscar si el usuario existe con esa contraseña
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Correo == correo && u.Contrasena == contrasena);
 
             if (usuario != null)
             {
-                // ¡Inicio de sesión exitoso! Por ahora lo redirigimos al Inicio de las Motos
-                // Más adelante podemos usar Cookies para recordar la sesión
+                // 🔹 GUARDAR DATOS EN LA SESIÓN:
+                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+                HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre);
+
+                // Redirige al inicio de las motos
                 return RedirectToAction("Index", "Motos");
             }
 
@@ -84,7 +86,8 @@ namespace BikerXY.Controllers
         // Cerrar Sesión
         public IActionResult Logout()
         {
-            // Por ahora solo redirige al inicio
+            // 🔹 BORRAR LA SESIÓN
+            HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
     }

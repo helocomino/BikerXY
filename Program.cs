@@ -9,6 +9,7 @@ builder.Services.AddDbContext<BikerXY.Data.ApplicationDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(); // 👈 Activa el servicio de sesiones
 
 var app = builder.Build();
 
@@ -23,6 +24,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
+app.UseSession(); // 👈 Permite a la app usar sesiones
 app.MapStaticAssets();
 
 app.MapControllerRoute(
