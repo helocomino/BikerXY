@@ -10,6 +10,7 @@ builder.Services.AddDbContext<BikerXY.Data.ApplicationDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(); // 👈 Activa el servicio de sesiones
+builder.Services.AddHttpContextAccessor(); // 👈 AGREGA ESTA LÍNEA AQUÍ
 
 var app = builder.Build();
 
