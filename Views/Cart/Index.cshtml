@@ -1,0 +1,82 @@
+﻿@model List<BikerXY.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Carrito de Compras";
+}
+
+<div class="container mt-4">
+    <h2>🛒 Tu Carrito de Compras</h2>
+    <hr />
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center py-5">
+            <h4>Tu carrito está vacío 🏍️</h4>
+            <p>¡Explora nuestro catálogo y encuentra la moto de tus sueños!</p>
+            <a asp-controller="Motos" asp-action="Index" class="btn btn-primary mt-2">Ver Catálogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm p-3 mb-4">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Moto</th>
+                                <th>Precio</th>
+                                <th class="text-center">Cantidad</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@item.ImagenUrl" alt="@item.Modelo" style="width: 70px; height: auto; margin-right: 15px;" class="rounded bg-light" />
+                                            <div>
+                                                <strong>@item.Marca</strong>
+                                                <p class="text-muted mb-0 small">@item.Modelo (Stock: @item.StockDisponible)</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@item.Precio.ToString("C")</td>
+                                    <td class="text-center" style="width: 120px;">
+                                        <span class="badge bg-secondary p-2">@item.Cantidad Unidades</span>
+                                    </td>
+                                    <td><strong>@item.Total.ToString("C")</strong></td>
+                                    <td>
+                                        <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-motoId="@item.MotoId" class="text-danger" title="Eliminar del carrito">
+                                            🗑️
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm p-4 bg-light">
+                    <h4>Resumen del Pedido</h4>
+                    <hr />
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Total de motos:</span>
+                        <strong>@Model.Sum(c => c.Cantidad)</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5>Total a Pagar:</h5>
+                        <h4 class="text-success">@Model.Sum(c => c.Total).ToString("C")</h4>
+                    </div>
+                    <button class="btn btn-success w-100 btn-lg shadow-sm">💳 Proceder al Pago</button>
+                    <a asp-controller="Motos" asp-action="Index" class="btn btn-link w-100 text-center mt-2 text-decoration-none text-muted">← Seguir comprando</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
