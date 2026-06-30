@@ -2,6 +2,7 @@
 using BikerXY.Data;
 using BikerXY.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace BikerXY.Controllers
 {
@@ -66,16 +67,24 @@ namespace BikerXY.Controllers
                 return View();
             }
 
+            // Validar credenciales contra la base de datos
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Correo == correo && u.Contrasena == contrasena);
 
             if (usuario != null)
             {
-                // 🔹 GUARDAR DATOS EN LA SESIÓN:
+                // 🔹 GUARDAR DATOS EN LA SESIÓN (Corregido con UsuarioEmail para el candado)
                 HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
                 HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre);
+                HttpContext.Session.SetString("UsuarioEmail", usuario.Correo); // 👈 ¡Línea clave de seguridad!
 
-                // Redirige al inicio de las motos
+                // 🔒 DETECTAR ADMINISTRADOR DEFINITIVO
+                if (usuario.Correo.ToLower() == "adminxy@gmail.com")
+                {
+                    return RedirectToAction("Index", "Admin"); // 🛠️ Al Administrador lo manda directo al panel
+                }
+
+                // Al cliente común lo manda al catálogo de motos
                 return RedirectToAction("Index", "Motos");
             }
 
