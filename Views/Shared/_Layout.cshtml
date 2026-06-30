@@ -16,7 +16,6 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark custom-navbar-carbon shadow-lg py-3">
             <div class="container">
-                <!-- Logo con estilo oro metálico -->
                 <a class="navbar-brand fw-bold tracking-tight text-white logo-bikerxy" asp-area="" asp-controller="Home" asp-action="Index">
                     BIKER<span class="text-gold">XY</span>
                 </a>
@@ -38,19 +37,16 @@
                                 🛒 Carrito (<span id="cuenta-carrito" class="text-gold fw-bold">0</span>)
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-muted px-3 custom-nav-link-admin" asp-area="" asp-controller="Admin" asp-action="Index">
-                                🛠️ Panel Admin
-                            </a>
-                        </li>
                     </ul>
 
-                    <!-- Sección de Usuario (Lado derecho) -->
                     <div class="d-flex align-items-center gap-3">
+                        <a class="text-decoration-none text-muted me-2 small fw-bold link-admin-right" asp-area="" asp-controller="Admin" asp-action="Index">
+                            🛠️ Admin
+                        </a>
+
                         @if (Context.Session.GetString("UsuarioNombre") != null)
                         {
                             <div class="text-light me-2 d-flex align-items-center gap-2">
-                                <span class="text-muted small">👤 Piloto:</span>
                                 <strong class="text-white">@Context.Session.GetString("UsuarioNombre")</strong>
                             </div>
                             <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-gold px-3 rounded-pill fw-bold btn-logout-custom">

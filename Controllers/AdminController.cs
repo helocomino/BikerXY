@@ -14,9 +14,19 @@ namespace BikerXY.Controllers
             _context = context;
         }
 
-        // 📋 1. LISTADO PRINCIPAL: /Admin
+        // 📋 1. LISTADO PRINCIPAL: /Admin (Protegido de intrusos)
         public async Task<IActionResult> Index()
         {
+            // Obtener los datos de sesión actuales
+            var usuarioEmail = HttpContext.Session.GetString("UsuarioEmail");
+
+            // 🔒 CANDADO DE SEGURIDAD: Solo permite tu correo de administrador definitivo
+            if (string.IsNullOrEmpty(usuarioEmail) || usuarioEmail.ToLower() != "adminxy@gmail.com")
+            {
+                // Si no eres tú, te bota directo al Login
+                return RedirectToAction("Login", "Account");
+            }
+
             var motos = await _context.Motos.ToListAsync();
             return View(motos);
         }

@@ -96,3 +96,10 @@ body {
         color: #111 !important;
         box-shadow: 0 4px 15px rgba(223, 186, 107, 0.4);
     }
+.link-admin-right {
+    transition: color 0.3s ease;
+}
+
+    .link-admin-right:hover {
+        color: #dfba6b !important;
+    }
