@@ -106,7 +106,7 @@ body {
 
 /* 🌍 FONDO GENERAL RELLENO PARA TODA LA WEB */
 body {
-    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), url('https://ibb.co/gLzzxhh6') no-repeat center center fixed;
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), url('https://i.ibb.co/v6ZZSRRD/fondo-bikerxy.png') no-repeat center center fixed;
     background-size: cover;
     color: #ffffff;
     min-height: 100vh;
