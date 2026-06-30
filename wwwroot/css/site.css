@@ -103,3 +103,11 @@ body {
     .link-admin-right:hover {
         color: #dfba6b !important;
     }
+
+/* 🌍 FONDO GENERAL RELLENO PARA TODA LA WEB */
+body {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), url('/images/fondo-bikerxy.png.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff; /* Hace que los textos por defecto de .NET sean blancos y legibles sobre lo oscuro */
+    min-height: 100vh;
+}
