@@ -29,21 +29,36 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-/* ---- ANIMACIONES PREVENTIVAS ELEGANTES PARA BIKERXY ---- */
+/* ---- ESTÉTICA PREMIUM: FIBRA DE CARBONO Y ORO (BIKERXY) ---- */
 
-/* Efecto para los enlaces comunes */
+/* Tono de Oro General */
+.text-gold {
+    color: #dfba6b !important;
+    text-shadow: 0 0 8px rgba(223, 186, 107, 0.3);
+}
+
+/* Simulación de textura de Fibra de Carbono mediante CSS */
+.custom-navbar-carbon {
+    background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px, linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0, linear-gradient(27deg, #222 5px, transparent 5px) 0 10px, linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px, linear-gradient(90deg, #1b1b1b 10px, transparent 10px), linear-gradient(#1c1c1c 25%, #1a1a1a 25%, #191919 50%, transparent 50%, #191919 75%, #171717 75%, #171717 100%);
+    background-size: 20px 20px;
+    background-color: #1a1a1a;
+    border-bottom: 2px solid #dfba6b !important; /* Línea dorada inferior que corta el menú */
+}
+
+/* Animación de enlaces estilo Oro Metálico */
 .custom-nav-link {
     position: relative;
     transition: color 0.3s ease-in-out, transform 0.2s ease;
     font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
     .custom-nav-link:hover {
-        color: #ff4d4d !important; /* Rojo deportivo al pasar el mouse */
+        color: #dfba6b !important;
         transform: translateY(-1px);
     }
 
-    /* Línea animada debajo de cada enlace */
+    /* Línea animada dorada al pasar el cursor */
     .custom-nav-link::after {
         content: '';
         position: absolute;
@@ -51,7 +66,8 @@ body {
         height: 2px;
         bottom: 2px;
         left: 15px;
-        background-color: #ff4d4d;
+        background-color: #dfba6b;
+        box-shadow: 0 0 10px #dfba6b;
         transition: width 0.3s ease;
     }
 
@@ -62,20 +78,21 @@ body {
 /* Enlace discreto de Admin */
 .custom-nav-link-admin {
     transition: color 0.3s ease;
-    font-size: 0.9rem;
 }
 
     .custom-nav-link-admin:hover {
-        color: #ffc107 !important; /* Dorado */
+        color: #ffffff !important;
     }
 
-/* Botón de cerrar sesión premium */
-.btn-logout-custom {
+/* Botón de cerrar sesión en Oro */
+.btn-outline-gold {
+    color: #dfba6b;
+    border-color: #dfba6b;
     transition: all 0.3s ease;
 }
 
-    .btn-logout-custom:hover {
-        background-color: #dc3545;
-        color: #fff !important;
-        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    .btn-outline-gold:hover {
+        background-color: #dfba6b;
+        color: #111 !important;
+        box-shadow: 0 4px 15px rgba(223, 186, 107, 0.4);
     }

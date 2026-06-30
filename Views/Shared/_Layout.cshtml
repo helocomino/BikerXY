@@ -14,20 +14,19 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom border-secondary shadow-lg py-3" style="background: linear-gradient(135deg, #121212 0%, #1c1c1c 100%);">
+        <nav class="navbar navbar-expand-sm navbar-dark custom-navbar-carbon shadow-lg py-3">
             <div class="container">
-                <!-- Logo con estilo deportivo -->
-                <a class="navbar-brand fw-bold tracking-tight text-white" asp-area="" asp-controller="Home" asp-action="Index" style="letter-spacing: 2px; font-size: 1.5rem;">
-                    BIKER<span class="text-danger">XY</span>
+                <!-- Logo con estilo oro metálico -->
+                <a class="navbar-brand fw-bold tracking-tight text-white logo-bikerxy" asp-area="" asp-controller="Home" asp-action="Index">
+                    BIKER<span class="text-gold">XY</span>
                 </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Enlaces del lado izquierdo con animación CSS -->
                     <ul class="navbar-nav flex-grow-1 header-links">
                         <li class="nav-item">
                             <a class="nav-link text-light px-3 custom-nav-link" asp-area="" asp-controller="Motos" asp-action="Index">
@@ -36,10 +35,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light px-3 custom-nav-link" asp-area="" asp-controller="Cart" asp-action="Index">
-                                🛒 Carrito (<span id="cuenta-carrito" class="text-danger fw-bold">0</span>)
+                                🛒 Carrito (<span id="cuenta-carrito" class="text-gold fw-bold">0</span>)
                             </a>
                         </li>
-                        <!-- Enlace directo al panel si quieres entrar rápido -->
                         <li class="nav-item">
                             <a class="nav-link text-muted px-3 custom-nav-link-admin" asp-area="" asp-controller="Admin" asp-action="Index">
                                 🛠️ Panel Admin
@@ -47,7 +45,7 @@
                         </li>
                     </ul>
 
-                    <!-- Sección de Usuario (Lado derecho de image_f735db.png) -->
+                    <!-- Sección de Usuario (Lado derecho) -->
                     <div class="d-flex align-items-center gap-3">
                         @if (Context.Session.GetString("UsuarioNombre") != null)
                         {
@@ -55,7 +53,7 @@
                                 <span class="text-muted small">👤 Piloto:</span>
                                 <strong class="text-white">@Context.Session.GetString("UsuarioNombre")</strong>
                             </div>
-                            <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-danger px-3 rounded-pill fw-bold btn-logout-custom">
+                            <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-gold px-3 rounded-pill fw-bold btn-logout-custom">
                                 Cerrar Sesión
                             </a>
                         }
