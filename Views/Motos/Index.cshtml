@@ -12,25 +12,33 @@
         <p class="text-muted">Encuentra la moto ideal para tu estilo urbano o deportivo.</p>
     </div>
 
+    <!-- 🔍 BUSCADOR MODERNO CON MICRÓFONO INTEGRADO -->
     <div class="container mb-5" style="max-width: 650px;">
         <form asp-action="Index" method="get" id="searchForm">
             <div class="input-group shadow-lg" style="border: 1px solid #dfba6b; border-radius: 50px; overflow: hidden; background-color: #212529;">
+                <!-- Icono de lupa -->
                 <span class="input-group-text bg-transparent border-0 text-muted ps-3">🔍</span>
                 
+                <!-- Input de búsqueda de texto -->
                 <input type="text" name="buscar" id="searchInput" class="form-control bg-transparent border-0 text-white py-2" placeholder="Busca por marca, modelo o categoría..." value="@Context.Request.Query["buscar"]" autocomplete="off" style="box-shadow: none;" />
                 
-                <button type="button" id="micButton" class="btn bg-transparent border-0 text-warning px-3" title="Buscar por voz" style="box-shadow: none;">
+                <!-- BOTÓN DEL MICRÓFONO -->
+                <button type="button" id="micButton" class="btn bg-transparent border-0 text-warning px-3" title="Buscar por voz" style="box-shadow: none; z-index: 10;">
                     <span id="micIcon" style="font-size: 1.2rem;">🎙️</span>
                 </button>
                 
+                <!-- Botón Buscar clásico -->
                 <button type="submit" class="btn fw-bold px-4 m-1 rounded-pill shadow-sm" style="background-color: #dfba6b; color: #141414;">Buscar</button>
             </div>
-            <small id="micStatus" class="form-text d-block text-center mt-2 animate-pulse" style="display: none !important; font-style: italic; color: #dfba6b !important; font-weight: bold;">
-                🔴 Escuchando... habla ahora
-            </small>
+            <!-- Indicador visual de escucha -->
+            <div id="micStatus" class="text-center mt-2" style="display: none; color: #dfba6b !important; font-weight: bold;">
+                <span class="spinner-grow spinner-grow-sm text-danger me-1" role="status"></span>
+                🔴 Escuchando... habla ahora: <span id="liveTranscript" class="text-white-50 italic"></span>
+            </div>
         </form>
     </div>
 
+    <!-- Lista de Motos -->
     <div class="row">
         @if (!Model.Any())
         {
@@ -76,6 +84,7 @@
     </div>
 </div>
 
+<!-- 🧠 JS MEJORADO CON ESCRITURA EN TIEMPO REAL -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const micButton = document.getElementById("micButton");
@@ -83,69 +92,84 @@
         const searchInput = document.getElementById("searchInput");
         const searchForm = document.getElementById("searchForm");
         const micStatus = document.getElementById("micStatus");
+        const liveTranscript = document.getElementById("liveTranscript");
 
-        // Verificar si el navegador es compatible con comandos de voz
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
         if (!SpeechRecognition) {
-            // Ocultar botón si el navegador es muy viejo o no lo soporta
+            alert("Tu navegador no soporta búsqueda por voz. Prueba usando Google Chrome o Microsoft Edge.");
             micButton.style.display = "none";
-            console.log("El navegador no soporta Web Speech API.");
             return;
         }
 
         const recognition = new SpeechRecognition();
-        recognition.lang = 'es-ES'; // Idioma Español
-        recognition.interimResults = false; // Solo el resultado final procesado
-        recognition.maxAlternatives = 1;
+        recognition.lang = 'es-ES';
+        recognition.interimResults = true; // ACTIVADO: Permite escribir en la pantalla mientras estás hablando
+        recognition.continuous = false;
 
-        // Evento al dar clic al micrófono
-        micButton.addEventListener("click", function () {
-            try {
-                recognition.start();
-            } catch (e) {
+        let isListening = false;
+
+        micButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (!isListening) {
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
                 recognition.stop();
             }
         });
 
-        // Cuando el micrófono se activa y empieza a escuchar
         recognition.onstart = function () {
+            isListening = true;
             micIcon.innerText = "🛑";
-            micStatus.style.setProperty("display", "block", "important");
-            searchInput.placeholder = "Escuchando tu voz...";
+            micStatus.style.display = "block";
+            liveTranscript.innerText = "...";
+            searchInput.value = "";
+            searchInput.placeholder = "Escuchando...";
         };
 
-        // Si ocurre un error (Permiso denegado, etc.)
-        recognition.onerror = function (event) {
-            console.error("Error de reconocimiento: ", event.error);
-            resetMicUI();
-        };
-
-        // Al terminar de escuchar
-        recognition.onend = function () {
-            resetMicUI();
-        };
-
-        // Captura exitosa de la voz
+        // MIENTRAS ESTÁS HABLANDO, VA ESCRIBIENDO EN EL INPUT
         recognition.onresult = function (event) {
-            const textResult = event.results[0][0].transcript;
-            
-            // Limpieza básica del texto dictado
-            let cleanedText = textResult.trim();
-            if (cleanedText.endsWith('.')) {
-                cleanedText = cleanedText.slice(0, -1);
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
             }
 
-            // Insertamos el texto en el buscador
-            searchInput.value = cleanedText;
+            // Muestra en vivo lo que entiende el navegador
+            const textoActual = finalTranscript || interimTranscript;
+            searchInput.value = textoActual;
+            liveTranscript.innerText = `"${textoActual}"`;
+        };
 
-            // Enviamos el formulario automáticamente
-            searchForm.submit();
+        recognition.onerror = function (event) {
+            console.error("Error de voz: ", event.error);
+            if(event.error === 'not-allowed') {
+                alert("Permiso de micrófono denegado. Por favor, activa el micrófono en el candado de la barra de direcciones de tu navegador.");
+            }
+            resetMicUI();
+        };
+
+        recognition.onend = function () {
+            resetMicUI();
+            // Si el usuario logró decir algo, enviamos el buscador automáticamente al terminar
+            if (searchInput.value.trim() !== "") {
+                setTimeout(() => { searchForm.submit(); }, 800);
+            }
         };
 
         function resetMicUI() {
+            isListening = false;
             micIcon.innerText = "🎙️";
-            micStatus.style.setProperty("display", "none", "important");
+            micStatus.style.display = "none";
             searchInput.placeholder = "Busca por marca, modelo o categoría...";
         }
     });
