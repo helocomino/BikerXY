@@ -15,23 +15,29 @@ namespace BikerXY.Models
         public string Modelo { get; set; } = string.Empty;
 
         [Required]
-        public int Cilindrada { get; set; }
+        public int Anio { get; set; } // 🆕 Año de la moto
+
+        [Required]
+        public int Cilindrada { get; set; } // 🆕 Ej: 250, 600, 1000 (en cc)
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Precio { get; set; }
 
-        public string ImagenUrl { get; set; } = string.Empty;
-
-        public string Categoria { get; set; } = string.Empty;
-
-        // 🆕 NUEVOS CAMPOS PARA STOCK Y FILTROS ADVANCED
         [Required]
-        public int Stock { get; set; } = 0; // Control de inventario
+        public string Estado { get; set; } = "Nueva"; // 🆕 "Nueva" o "Usada"
 
         [Required]
-        public string Ambiente { get; set; } = string.Empty; // Terreno, Pistera, Carretera
+        public int Stock { get; set; } = 1;
 
-        public string Descripcion { get; set; } = string.Empty; // Ficha técnica básica
+        public string? Categoria { get; set; } = "General"; // Ej: Deportiva, Custom, Scooter
+
+        public string? Descripcion { get; set; }
+
+        public string? ImagenUrl { get; set; } // Foto principal estática
+
+        public string? GifUrl { get; set; } // 🆕 Para el Lightbox interactivo en el detalle
+
+        public bool EsDestacada { get; set; } = false; // 🆕 Para alimentar el Carrusel Dinámico superior
     }
 }

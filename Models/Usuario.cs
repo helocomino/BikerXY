@@ -7,18 +7,17 @@ namespace BikerXY.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El nombre es obligatorio")]
-        [StringLength(100)]
+        [Required]
         public string Nombre { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El correo es obligatorio")]
-        [EmailAddress(ErrorMessage = "Formato de correo inválido")]
+        [Required]
+        [EmailAddress]
         public string Correo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La contraseña es obligatoria")]
-        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+        [Required]
         public string Contrasena { get; set; } = string.Empty;
 
-        // Por ahora lo dejamos simple, luego podemos agregar campos como "Rol" (Admin/Cliente)
+        [Required]
+        public string Rol { get; set; } = "Cliente"; // 🆕 "Admin", "Vendedor" o "Cliente"
     }
 }
