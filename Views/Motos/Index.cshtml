@@ -7,38 +7,146 @@
 }
 
 <div class="container mt-5">
-    <h1 class="text-center mb-4 font-weight-bold">Catálogo de Motos BikerXY</h1>
-    <p class="text-muted text-center mb-5">Encuentra la moto ideal para tu estilo urbano o deportivo.</p>
+    <div class="mb-4 text-center">
+        <h1 class="display-4 fw-bold text-white" style="letter-spacing: 1px;">Catálogo de Motos BIKER<span style="color: #dfba6b;">XY</span></h1>
+        <p class="text-muted">Encuentra la moto ideal para tu estilo urbano o deportivo.</p>
+    </div>
+
+    <div class="container mb-5" style="max-width: 650px;">
+        <form asp-action="Index" method="get" id="searchForm">
+            <div class="input-group shadow-lg" style="border: 1px solid #dfba6b; border-radius: 50px; overflow: hidden; background-color: #212529;">
+                <span class="input-group-text bg-transparent border-0 text-muted ps-3">🔍</span>
+                
+                <input type="text" name="buscar" id="searchInput" class="form-control bg-transparent border-0 text-white py-2" placeholder="Busca por marca, modelo o categoría..." value="@Context.Request.Query["buscar"]" autocomplete="off" style="box-shadow: none;" />
+                
+                <button type="button" id="micButton" class="btn bg-transparent border-0 text-warning px-3" title="Buscar por voz" style="box-shadow: none;">
+                    <span id="micIcon" style="font-size: 1.2rem;">🎙️</span>
+                </button>
+                
+                <button type="submit" class="btn fw-bold px-4 m-1 rounded-pill shadow-sm" style="background-color: #dfba6b; color: #141414;">Buscar</button>
+            </div>
+            <small id="micStatus" class="form-text d-block text-center mt-2 animate-pulse" style="display: none !important; font-style: italic; color: #dfba6b !important; font-weight: bold;">
+                🔴 Escuchando... habla ahora
+            </small>
+        </form>
+    </div>
 
     <div class="row">
-        @foreach (var moto in Model)
+        @if (!Model.Any())
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="@moto.ImagenUrl" class="card-img-top" alt="@moto.Modelo" style="height: 220px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title font-weight-bold">@moto.Marca @moto.Modelo</h5>
-                        <p class="card-text text-secondary mb-1"><strong>Cilindrada:</strong> @moto.Cilindrada cc</p>
-                        <p class="card-text text-secondary"><strong>Categoría:</strong> @moto.Categoria</p>
-                        <div class="mt-auto">
-                            <h4 class="text-success font-weight-bold mb-3">$@moto.Precio.ToString("N2")</h4>
-                            @if (moto.Stock > 0)
-                            {
-                                <button class="btn btn-dark btn-agregar-carrito"
-                                        data-id="@moto.Id"
-                                        data-stock="@moto.Stock"
-                                        data-logeado="@(HttpContextAccessor.HttpContext?.Session.GetString("UsuarioNombre") != null ? "true" : "false")">
-                                    Agregar al carrito
-                                </button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-danger" disabled>❌ Agotado</button>
-                            }
+            <div class="col-12 text-center my-5">
+                <h3 class="text-muted">No se encontraron motos que coincidan con tu búsqueda.</h3>
+                <a asp-action="Index" class="btn btn-outline-warning mt-3 rounded-pill">Ver todo el catálogo</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var moto in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0 bg-dark text-white" style="border: 1px solid #333 !important;">
+                        <img src="@moto.ImagenUrl" class="card-img-top" alt="@moto.Modelo" style="height: 220px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title font-weight-bold text-warning">@moto.Marca @moto.Modelo</h5>
+                            <p class="card-text text-secondary mb-1"><strong>Año:</strong> @moto.Anio</p>
+                            <p class="card-text text-secondary mb-1"><strong>Cilindrada:</strong> @moto.Cilindrada cc</p>
+                            <p class="card-text text-secondary mb-1"><strong>Estado:</strong> <span class="badge bg-secondary">@moto.Estado</span></p>
+                            <p class="card-text text-secondary"><strong>Categoría:</strong> @moto.Categoria</p>
+                            <div class="mt-auto">
+                                <h4 class="font-weight-bold mb-3" style="color: #dfba6b;">$@moto.Precio.ToString("N2")</h4>
+                                @if (moto.Stock > 0)
+                                {
+                                    <button class="btn btn-light w-100 btn-agregar-carrito fw-bold text-dark"
+                                            data-id="@moto.Id"
+                                            data-stock="@moto.Stock"
+                                            data-logeado="@(HttpContextAccessor.HttpContext?.Session.GetString("UsuarioNombre") != null ? "true" : "false")">
+                                        Agregar al carrito
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger w-100" disabled>❌ Agotado</button>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         }
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const micButton = document.getElementById("micButton");
+        const micIcon = document.getElementById("micIcon");
+        const searchInput = document.getElementById("searchInput");
+        const searchForm = document.getElementById("searchForm");
+        const micStatus = document.getElementById("micStatus");
+
+        // Verificar si el navegador es compatible con comandos de voz
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            // Ocultar botón si el navegador es muy viejo o no lo soporta
+            micButton.style.display = "none";
+            console.log("El navegador no soporta Web Speech API.");
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES'; // Idioma Español
+        recognition.interimResults = false; // Solo el resultado final procesado
+        recognition.maxAlternatives = 1;
+
+        // Evento al dar clic al micrófono
+        micButton.addEventListener("click", function () {
+            try {
+                recognition.start();
+            } catch (e) {
+                recognition.stop();
+            }
+        });
+
+        // Cuando el micrófono se activa y empieza a escuchar
+        recognition.onstart = function () {
+            micIcon.innerText = "🛑";
+            micStatus.style.setProperty("display", "block", "important");
+            searchInput.placeholder = "Escuchando tu voz...";
+        };
+
+        // Si ocurre un error (Permiso denegado, etc.)
+        recognition.onerror = function (event) {
+            console.error("Error de reconocimiento: ", event.error);
+            resetMicUI();
+        };
+
+        // Al terminar de escuchar
+        recognition.onend = function () {
+            resetMicUI();
+        };
+
+        // Captura exitosa de la voz
+        recognition.onresult = function (event) {
+            const textResult = event.results[0][0].transcript;
+            
+            // Limpieza básica del texto dictado
+            let cleanedText = textResult.trim();
+            if (cleanedText.endsWith('.')) {
+                cleanedText = cleanedText.slice(0, -1);
+            }
+
+            // Insertamos el texto en el buscador
+            searchInput.value = cleanedText;
+
+            // Enviamos el formulario automáticamente
+            searchForm.submit();
+        };
+
+        function resetMicUI() {
+            micIcon.innerText = "🎙️";
+            micStatus.style.setProperty("display", "none", "important");
+            searchInput.placeholder = "Busca por marca, modelo o categoría...";
+        }
+    });
+</script>
